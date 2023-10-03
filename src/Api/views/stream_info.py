@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # General Packages
 from __future__ import annotations
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 
 # Athena Packages
 
@@ -21,4 +21,10 @@ class StreamInfoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return StreamInfo.objects.filter(streamer=self.kwargs['streamer_pk'])
-        # return StreamInfo.objects.filter(streamer=Streamer.objects.get(id=self.kwargs['streamer_pk']))
+
+class LatestStreamInfoViewSet(generics.RetrieveAPIView):
+    serializer_class = StreamInfoSerializer
+
+    def get_object(self):
+        return StreamInfo.objects.filter(streamer=self.kwargs['streamer_pk']).latest('timestamp')
+
